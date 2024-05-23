@@ -38,6 +38,11 @@ RUN set -eux; \
     wget http://github.com/taigaio/taiga-contrib-gitlab-auth/archive/6.8.0.zip -O source.zip; \
     unzip -j source.zip "taiga-contrib-gitlab-auth-6.8.0/front/dist/*" -d gitlab-auth; \
     rm source.zip; \
+    # SAML \
+    # Gitlab
+    wget https://github.com/arash-khajelou/taiga-contrib-saml-auth/archive/1.0.0.zip -O source.zip; \
+    unzip -j source.zip "taiga-contrib-saml-auth-1.0.0/front/dist/*" -d saml-auth; \
+    rm source.zip; \
     cd /; \
     # Remove unused dependencies
     apk del --no-cache .build-deps; \

@@ -1,0 +1,41 @@
+name: Docker Build and Push
+
+on:
+  push:
+    branches:
+      - bp-main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+
+    - name: Log in to Docker Registry
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+        registry: ${{ secrets.DOCKER_REGISTRY }}
+
+    - name: Extract Git Revision
+      id: get_rev
+      run: echo "REVISION=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v3
+      with:
+        context: .
+        file: docker/Dockerfile
+        push: true
+        tags: |
+          ${{ secrets.DOCKER_REGISTRY }}${{ secrets.DOCKER_IMAGE_NAME }}:${{ env.REVISION }}
+          ${{ secrets.DOCKER_REGISTRY }}${{ secrets.DOCKER_IMAGE_NAME }}:bp-latest
+      env:
+        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
