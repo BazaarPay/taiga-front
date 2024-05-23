@@ -31,7 +31,7 @@ if [ ${PUBLIC_REGISTER_ENABLED} == "true" ]; then
     fi
 fi
 
-if [[ -z "${SAML_ENABLED}" ]]; then
+if [ ${SAML_ENABLED} == "true" ]; then
     export SAML_ENABLED="true"
     contribs+=('"/plugins/saml-auth/saml-auth.json"')
 fi
