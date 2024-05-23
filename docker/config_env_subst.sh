@@ -31,6 +31,11 @@ if [ ${PUBLIC_REGISTER_ENABLED} == "true" ]; then
     fi
 fi
 
+if [[ -z "${SAML_ENABLED}" ]]; then
+    export SAML_ENABLED="true"
+    contribs+=('"/plugins/saml-auth/saml-auth.json"')
+fi
+
 # Importers
 if [[ -z "${ENABLE_GITHUB_IMPORTER}" ]]; then
     export ENABLE_GITHUB_IMPORTER="false"
