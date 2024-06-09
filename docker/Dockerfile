@@ -18,15 +18,15 @@ RUN set -eux; \
     apk add --no-cache --virtual .build-deps \
        subversion; \
     apk add \
-       bash; \
+       bash;
     # Install taiga-front core
-    wget https://github.com/taigaio/taiga-front-dist/archive/6.8.0.zip -O source.zip; \
+RUN wget https://github.com/taigaio/taiga-front-dist/archive/6.8.0.zip -O source.zip; \
     unzip source.zip; \
     mv /taiga-front-dist-6.8.0 /taiga; \
     mv /conf.json.template taiga/dist/; \
-    chmod +x /docker-entrypoint.d/30_config_env_subst.sh; \
+    chmod +x /docker-entrypoint.d/30_config_env_subst.sh;
     # Install taiga-front contribs
-    mkdir /taiga/dist/plugins; \
+RUN mkdir /taiga/dist/plugins; \
     cd /taiga/dist/plugins; \
     # Slack
     wget https://github.com/taigaio/taiga-contrib-slack/archive/6.8.0.zip -O source.zip; \
@@ -39,17 +39,19 @@ RUN set -eux; \
     # Gitlab
     wget http://github.com/taigaio/taiga-contrib-gitlab-auth/archive/6.8.0.zip -O source.zip; \
     unzip -j source.zip "taiga-contrib-gitlab-auth-6.8.0/front/dist/*" -d gitlab-auth; \
-    rm source.zip; \
+    rm source.zip;
     # SAML
-    wget https://github.com/arash-khajelou/taiga-contrib-saml-auth/archive/1.0.0.zip -O source.zip; \
+RUN wget https://github.com/arash-khajelou/taiga-contrib-saml-auth/archive/1.0.0.zip -O source.zip; \
     unzip -j source.zip "taiga-contrib-saml-auth-1.0.0/front/dist/*" -d saml-auth; \
-    rm source.zip; \
-    wget -O /tmp/taiga-contrib-openid-auth.tar.gz "https://github.com/robrotheram/taiga-contrib-openid-auth/archive/refs/heads/master.tar.gz" \
+    rm source.zip;
+    # OpenID
+RUN wget -O /tmp/taiga-contrib-openid-auth.tar.gz "https://github.com/robrotheram/taiga-contrib-openid-auth/archive/refs/heads/master.tar.gz" \
     && tar xzf /tmp/taiga-contrib-openid-auth.tar.gz -C /tmp \
     && mkdir -p /usr/share/nginx/html/plugins/openid-auth \
     && cp -r /tmp/taiga-contrib-openid-auth*/front/dist/* /usr/share/nginx/html/plugins/openid-auth \
     && rm /tmp/taiga-contrib-openid-auth.tar.gz; \
-    cd /; \
+
+RUN cd /; \
     # Remove unused dependencies
     apk del --no-cache .build-deps; \
     rm source.zip; \
