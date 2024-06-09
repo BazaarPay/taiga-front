@@ -36,6 +36,10 @@ if [ ${SAML_ENABLED} == "true" ]; then
     contribs+=('"/plugins/saml-auth/saml-auth.json"')
 fi
 
+if [ ${ENABLE_OPENID} == "true" ]; then
+    contribs+=('"/plugins/openid-auth/openid-auth.json"')
+fi
+
 # Importers
 if [[ -z "${ENABLE_GITHUB_IMPORTER}" ]]; then
     export ENABLE_GITHUB_IMPORTER="false"

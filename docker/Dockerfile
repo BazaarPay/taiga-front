@@ -7,6 +7,8 @@
 FROM nginx:1.23-alpine
 LABEL maintainer="support@taiga.io"
 
+ENV OPENID_SCOPE="openid email"
+
 COPY docker/default.conf /etc/nginx/conf.d/default.conf
 COPY docker/conf.json.template /
 COPY docker/config_env_subst.sh /docker-entrypoint.d/30_config_env_subst.sh
@@ -38,11 +40,15 @@ RUN set -eux; \
     wget http://github.com/taigaio/taiga-contrib-gitlab-auth/archive/6.8.0.zip -O source.zip; \
     unzip -j source.zip "taiga-contrib-gitlab-auth-6.8.0/front/dist/*" -d gitlab-auth; \
     rm source.zip; \
-    # SAML \
-    # Gitlab
+    # SAML
     wget https://github.com/arash-khajelou/taiga-contrib-saml-auth/archive/1.0.0.zip -O source.zip; \
     unzip -j source.zip "taiga-contrib-saml-auth-1.0.0/front/dist/*" -d saml-auth; \
     rm source.zip; \
+    wget -O /tmp/taiga-contrib-openid-auth.tar.gz "https://github.com/robrotheram/taiga-contrib-openid-auth/archive/refs/heads/master.tar.gz" \
+    && tar xzf /tmp/taiga-contrib-openid-auth.tar.gz -C /tmp \
+    && mkdir -p /usr/share/nginx/html/plugins/openid-auth \
+    && cp -r /tmp/taiga-contrib-openid-auth*/front/dist/* /usr/share/nginx/html/plugins/openid-auth \
+    && rm /tmp/taiga-contrib-openid-auth.tar.gz; \
     cd /; \
     # Remove unused dependencies
     apk del --no-cache .build-deps; \
